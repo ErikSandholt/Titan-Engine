@@ -38,7 +38,6 @@ private:
 		RectTransform,
 		MeshFilter,
 		Camera,
-		//Light,
 		SpotLight,
 		PointLight,
 		DirectionLight,
@@ -101,7 +100,6 @@ private:
 	};
 
 	using InitilizerInfo = std::unordered_map<std::wstring, ComponentListInfo>;
-	//using InitFunc = void(*)(std::vector<std::function<void()>>&, InitilizerInfo&, const BinaryFileReader&, int);
 
 	//std::Map of objects
 	//Binary file copy
@@ -181,15 +179,6 @@ private:
 	void InitNavmesh(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitBoxCollider(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitSphereCollider(	ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitColliders(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitSpriteRenderers(	ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitTriggerAreas(	ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitGameManager(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitPowerup(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitCinematic(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitDialogue(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitGrid(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitAnimations(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitUICanvas(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitUIImage(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitUIText(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
@@ -198,9 +187,6 @@ private:
 	void InitUIMenu(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitUISettings(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitUIPlayer(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitUIInGame(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitWater(			ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
-	//void InitUIManager(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitScriptComponent(	ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitNextSceneTrigger(	ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
 	void InitShotgunPickup(		ComponentListInfo& Info, const BinaryFileReader& aFile, int aSize);
@@ -366,5 +352,4 @@ inline void SceneLoader::InitPhase4(ComponentListInfo& aInfo)
 	}
 
 	myActiveWorkers.fetch_sub(1, std::memory_order_relaxed);
-	//WaitForContinue(aInfo.Continue);
 }
