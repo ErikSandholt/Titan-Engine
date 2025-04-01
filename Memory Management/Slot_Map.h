@@ -9,7 +9,7 @@
 
 struct Key
 {
-	int Index		= -1;
+	int Index	= -1;
 	int Generation	= -1;
 
 	Key() = default;
@@ -76,7 +76,7 @@ private:
 	int myFreeKeyHead		= -1;
 	int myFreeKeyTail		= -1;
 	int myCapacity			=  0;
-	int mySize				=  0;
+	int mySize			=  0;
 
 	Key_Inner* myKeys		= nullptr;
 	T* myData				= nullptr;
@@ -171,24 +171,9 @@ private:
 		}
 	}
 
-	//template<typename TValue>
-	//void Swap(TValue& aValue, TValue& aOther) const
-	//{
-	//	TValue temp = std::move(aValue);
-	//	aValue		= std::move(aOther);
-	//	aOther		= std::move(temp);
-	//}
-
 	void CreateSpace()
 	{
 		TryExpandList();
-
-		//int index = myFreeKeyHead;
-
-		//Key_Inner& indices			= GetIKey_ByKey(myFreeKeyHead); // myIndices[index];
-		//indices.Index				= mySize;
-		//myKeyIndex[indices.Index]	= indices.Index;
-
 		UpdateHeadAndTail();
 	}
 
@@ -213,12 +198,9 @@ private:
 		if(myKeys)
 		{
 			void* moveList = newList;
-			//void* checkMemory = nullptr;
-			//void* confirm = reinterpret_cast<T*>(static_cast<char*>(newList) + sizeof(Key) * myCapacity); confirm;
 			MoveList<Key>(static_cast<Key*>(moveList), myKeys);
 
 
-			//confirm = reinterpret_cast<T*>(static_cast<char*>(newList) + keySize);
 			moveList = static_cast<char*>(newList) + keySize;
 
 			T* dataList = reinterpret_cast<T*>(moveList);
@@ -226,7 +208,6 @@ private:
 			{	
 				//If the key generation is -1 then the data was never used
 				new (&dataList[i]) T(std::move( myData[i] ));
-				//myData[i].~TValue();
 			}
 
 
@@ -320,12 +301,12 @@ template<typename T>
 	{
 		myData[i].~T();
 		myDataKeyIndex[i]	= -1;
-		myKeys[i]			= defaultKey;
+		myKeys[i]		= defaultKey;
 	}
 
 	mySize			= 0;
-	myFreeKeyHead	= 0;
-	myFreeKeyTail	= myCapacity;
+	myFreeKeyHead		= 0;
+	myFreeKeyTail		= myCapacity;
 
 	Update_Debug();
 }
@@ -333,8 +314,8 @@ template<typename T>
 template<typename T>
  bool Slot_Map<T>::HasKey(const Key_Outer& aKey) const
 {
-	if (aKey.Index < 0)													return false;
-	if (myCapacity <= aKey.Index)										return false;
+	if (aKey.Index < 0)							return false;
+	if (myCapacity <= aKey.Index)						return false;
 
 	const Key_Inner& innerKey = GetIKey_ByKey(aKey.Index);
 	if (innerKey.Index == -1 || aKey.Generation != innerKey.Generation)	return false;
@@ -367,7 +348,6 @@ inline Key Slot_Map<T>::Insert(int aIndex)
 {
 	//This is in our best intrest to not call
 	TITAN_ASSERT(aIndex < myCapacity);
-	//Reserve(aIndex + 1);
 
 	Key_Inner& indices = GetIKey_ByKey(aIndex);
 
@@ -380,8 +360,6 @@ inline Key Slot_Map<T>::Insert(int aIndex)
 		indices.Index = mySize;
 		new (&myData[mySize]) T();
 		++mySize;
-		//auto dataKeyIndex = myDataKeyIndex[indices.Index]; dataKeyIndex;
-		//auto& data = myData[indices.Index]; data;
 	}
 	else
 	{
@@ -403,21 +381,12 @@ inline Key Slot_Map<T>::Create()
 	CreateSpace();
 	int index = myFreeKeyHead;
 
-	Key_Inner& indices		= GetIKey_ByKey(index); // myIndices[index];
+	Key_Inner& indices		= GetIKey_ByKey(index); 
 	indices.Index			= mySize;
 	++indices.Generation;
 	myDataKeyIndex[mySize]	= index;
 
-	new (&myData[mySize]) T(); // bugprone-multi-level-implicit-pointer-conversion
-	//Key key;
-	//key.Index = index;
-	//key.Generation = indices.Generation;
-
-	//Not Trail?
-	//UpdateTail(index);
-
-
-	//if (aOutKeyIndex < myFreeKeyHead) myFreeKeyHead = aOutKeyIndex;
+	new (&myData[mySize]) T();
 
 	UpdateHeadAndTail();
 
@@ -425,7 +394,7 @@ inline Key Slot_Map<T>::Create()
 
 	Update_Debug();
 
-	return CreateOKey_ByKey(index); //myIndices[myKeyIndex[mySize - 1]];
+	return CreateOKey_ByKey(index);
 }
 
 template<typename T>
@@ -435,7 +404,7 @@ template<typename T>
 	int index = myFreeKeyHead;
 
 
-	Key_Inner& indices = GetIKey_ByKey(index); // myIndices[index];
+	Key_Inner& indices = GetIKey_ByKey(index);
 	indices.Index = mySize;
 	++indices.Generation;
 	myDataKeyIndex[mySize] = index;
@@ -443,16 +412,7 @@ template<typename T>
 	auto& data			= myData[indices.Index]; data;
 	auto dataKeyIndex	= myDataKeyIndex[indices.Index]; dataKeyIndex;
 
-	new (&myData[mySize]) T(aValue); // bugprone-multi-level-implicit-pointer-conversion
-	//Key key;
-	//key.Index = index;
-	//key.Generation = indices.Generation;
-
-	//Not Trail?
-	//UpdateTail(index);
-
-
-	//if (aOutKeyIndex < myFreeKeyHead) myFreeKeyHead = aOutKeyIndex;
+	new (&myData[mySize]) T(aValue);
 
 	UpdateHeadAndTail();
 
@@ -460,7 +420,7 @@ template<typename T>
 
 	Update_Debug();
 	
-	return CreateOKey_ByKey(index); //myIndices[myKeyIndex[mySize - 1]];
+	return CreateOKey_ByKey(index);
 }
 
  template<typename T>
@@ -480,13 +440,12 @@ void Slot_Map<T>::Erase(Key_Outer aKey)
 {
 	if (HasKey(aKey) == false) return;
 
-	//int index = aKey.Index;
-	Key_Inner& indices = GetIKey_ByKey(aKey.Index);	//myIndices[index];
+	Key_Inner& indices = GetIKey_ByKey(aKey.Index);
 
 
 	int dataIndex = indices.Index;
 
-	indices.Index				= -1; //Set Key to -1 to indicate unused
+	indices.Index			= -1; //Set Key to -1 to indicate unused
 	myDataKeyIndex[dataIndex]	= -1;
 
 	//if less then head Update
@@ -500,16 +459,11 @@ void Slot_Map<T>::Erase(Key_Outer aKey)
 	//If last Dont swap
 	if (dataIndex != mySize)
 	{
-		Key_Inner& swapKey = GetIKey_ByData(mySize); //myIndices[myKeyIndex[dataIndex]];
+		Key_Inner& swapKey = GetIKey_ByData(mySize);
 		swapKey.Index = dataIndex;
 
 		std::swap(myData[dataIndex], myData[mySize]);
 		std::swap(myDataKeyIndex[dataIndex], myDataKeyIndex[mySize]);
-		//Swap(myData[dataIndex],		myData[mySize]);
-		//Swap(myKeyIndex[dataIndex],	myKeyIndex[mySize]);
-
-		//auto sizeDataAfter = GetDebugData(mySize); sizeDataAfter;
-		//auto indexDataAfter = GetDebugData(dataIndex); indexDataAfter;
 	}
 
 	myData[mySize].~T();
@@ -524,8 +478,6 @@ template<typename T>
  void Slot_Map<T>::Erase(int aDataIndex)
 {
 	if (aDataIndex < 0 || mySize <= aDataIndex) return;
-
-	//int generation = myIndices[myKeyIndex[aIndex]].Generation;
 
 	Erase(CreateOKey_ByData(aDataIndex));
 }
