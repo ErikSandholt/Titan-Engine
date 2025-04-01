@@ -67,14 +67,10 @@ bool SceneLoader::LoadScene(const std::string& aSceneName)
 	if (sceneData.OpenFile((sceneFolderPath + aSceneName + ".scene").c_str()))
 	{
 		LOG_MESSAGE("Loading Scene: \"%s\"", aSceneName.c_str());
-		//myCurrentScene->SetName(aSceneName);
-		//Message createMessage(Level::eMessage::Create);
-		//PostMaster<Level::eMessage>::Invoke(createMessage);
 
 		SceneLoader sl;
 		sl.InitScene(sceneData);
 		sl.Open(EngineSettings::global_WaitForSceneToFullyLoad);
-		//Time::S_Time::ResetDelta();
 		return true;
 	}
 
@@ -82,21 +78,21 @@ bool SceneLoader::LoadScene(const std::string& aSceneName)
 	return false;
 }
 
-#define INIT_TYPE(initFunc)																			\
-{																									\
-	BinaryFileReader file	= aFile;																\
-	int size				= file.Read<int>();														\
-	auto& info = myInitilizerInfo[typeName];														\
-	info.PtrMap.reserve(size);																		\
-	myActiveWorkers.fetch_add(1, std::memory_order_relaxed);										\
+#define INIT_TYPE(initFunc)										\
+{													\
+	BinaryFileReader file	= aFile;								\
+	int size				= file.Read<int>();					\
+	auto& info = myInitilizerInfo[typeName];							\
+	info.PtrMap.reserve(size);									\
+	myActiveWorkers.fetch_add(1, std::memory_order_relaxed);					\
 	myThreads.push_back(WorkingThreadManager::Enqueue([this, &info, file = std::move(file), size]()	\
-		{																							\
-			initFunc(info, file, size);																\
-																									\
-		}																							\
-	));																								\
-	break;																							\
-}																									\
+		{											\
+			initFunc(info, file, size);							\
+													\
+		}											\
+	));												\
+	break;												\
+}													\
 
 void SceneLoader::InitScene(const BinaryFileReader& aFile)
 {
@@ -107,13 +103,7 @@ void SceneLoader::InitScene(const BinaryFileReader& aFile)
 	initializers.reserve((size_t)ComponentTypes::Count);
 
 
-	
-	//bool goInit		= false;
-	//bool transInit	= false;
 	std::wstring typeName;
-
-	//int count		= 0;
-	//int safeCount	= 2;	//After RectTransform
 	
 	//Phase 0-1
 	myState = State::ReadingFile;
@@ -133,33 +123,28 @@ void SceneLoader::InitScene(const BinaryFileReader& aFile)
 				case ComponentTypes::RectTransform:		INIT_TYPE(InitRectTransforms)
 				case ComponentTypes::MeshFilter:		INIT_TYPE(InitMeshFilter)
 				case ComponentTypes::Camera:			INIT_TYPE(InitCameras)
-					//case ComponentTypes::Light:				INIT_TYPE(InitUnused)//INIT_TYPE(InitLights)
 				case ComponentTypes::SpotLight:			INIT_TYPE(InitLightSpot)
 				case ComponentTypes::PointLight:		INIT_TYPE(InitLightPoint)
-				case ComponentTypes::DirectionLight:	INIT_TYPE(InitLightDirection)
+				case ComponentTypes::DirectionLight:		INIT_TYPE(InitLightDirection)
 				case ComponentTypes::Player:			INIT_TYPE(InitPlayers)
 				case ComponentTypes::PlayerCamera:		INIT_TYPE(InitPlayerCamera)
-				case ComponentTypes::AudioSourceComp:	INIT_TYPE(InitAudioSource)
+				case ComponentTypes::AudioSourceComp:		INIT_TYPE(InitAudioSource)
 				case ComponentTypes::AudioListener:		INIT_TYPE(InitAudioListener)
-				case ComponentTypes::Enemy:				INIT_TYPE(InitEnemies)
+				case ComponentTypes::Enemy:			INIT_TYPE(InitEnemies)
 				case ComponentTypes::Canvas:			INIT_TYPE(InitUICanvas)
-				case ComponentTypes::Image:				INIT_TYPE(InitUIImage)
-				case ComponentTypes::Text:				INIT_TYPE(InitUIText)
+				case ComponentTypes::Image:			INIT_TYPE(InitUIImage)
+				case ComponentTypes::Text:			INIT_TYPE(InitUIText)
 				case ComponentTypes::Navmesh:			INIT_TYPE(InitNavmesh)
 				case ComponentTypes::UIButton:			INIT_TYPE(InitUIButton)
 				case ComponentTypes::UIMainMenu:		INIT_TYPE(InitUIMainMenu)
 				case ComponentTypes::UIMenu:			INIT_TYPE(InitUIMenu)
 				case ComponentTypes::UISettings:		INIT_TYPE(InitUISettings)
 				case ComponentTypes::BoxCollider:		INIT_TYPE(InitBoxCollider)
-				case ComponentTypes::SphereCollider:	INIT_TYPE(InitSphereCollider)
-				case ComponentTypes::PlayerUI:			INIT_TYPE(InitUnused)//INIT_TYPE(InitUIPlayer)
-					//case ComponentTypes::NextSceneTrigger:	INIT_TYPE(InitUIPlayer)
-					//
-					//case ComponentTypes::TMP_Text:			INIT_TYPE(InitUnused)
-					//case ComponentTypes::SpriteRenderer:	INIT_TYPE(InitUnused)
+				case ComponentTypes::SphereCollider:		INIT_TYPE(InitSphereCollider)
+				case ComponentTypes::PlayerUI:			INIT_TYPE(InitUnused)
 				case ComponentTypes::ScriptComponent:		INIT_TYPE(InitScriptComponent)
 				case ComponentTypes::NextSceneTrigger:		INIT_TYPE(InitNextSceneTrigger)
-				case ComponentTypes::ShotgunPickup:			INIT_TYPE(InitShotgunPickup)
+				case ComponentTypes::ShotgunPickup:		INIT_TYPE(InitShotgunPickup)
 			}
 
 		} catch (const std::out_of_range& e)
@@ -274,7 +259,6 @@ void SceneLoader::ContinueWorkerThread(ComponentListInfo& aInfo)
 {
 	myActiveWorkers.fetch_add(1, std::memory_order_relaxed);
 	aInfo.Continue.store(true, std::memory_order_relaxed);
-	//aInfo.Continue = true;
 }
 
 void SceneLoader::ContinueAllWorkerAndWait()
