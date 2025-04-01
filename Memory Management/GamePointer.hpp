@@ -4,7 +4,7 @@
 
 class IGameDataList;
 
-// GamePointer<T> refers to a list with a two int’s a key and generation to get the type it’s referring to.
+// GamePointer<T> refers to a list with a two intâ€™s a key and generation to get the type itâ€™s referring to.
 
 template <typename T>
 class GamePointer
@@ -16,9 +16,9 @@ private:
 #endif // _DEBUG
 
 
-	IGameDataList*	myList			= nullptr;
+	IGameDataList*			myList			= nullptr;
 	int				myKeyIndex		= 0;
-	int				myKeyGeneration = 0;
+	int				myKeyGeneration 	= 0;
 
 public:
 	GamePointer() : myList(nullptr), myKeyIndex(-1), myKeyGeneration(-1)
@@ -46,8 +46,8 @@ public:
 	}
 
 	int				GetKeyIndex() const			{ return myKeyIndex; }
-	int				GetKeyGeneration() const	{ return myKeyGeneration; }
-	IGameDataList*	GetList() const				{ return myList; }
+	int				GetKeyGeneration() const		{ return myKeyGeneration; }
+	IGameDataList*			GetList() const				{ return myList; }
 
 	template<typename Y>
 	GamePointer<Y> Cast() const
@@ -76,8 +76,8 @@ public:
 	
 	~GamePointer()
 	{
-		myList			= nullptr;
-		myKeyIndex		= -1;
+		myList		= nullptr;
+		myKeyIndex	= -1;
 		myKeyGeneration = -1;
 
 #ifdef _DEBUG
@@ -129,22 +129,14 @@ public:
 	bool operator ==(const GamePointer<X>& aRhs) const
 	{
 		//If this fails
-		if (*this			== false				)	return false;
-		if (aRhs			== false				)	return false;
+		if (*this			== false			)	return false;
+		if (aRhs			== false			)	return false;
 		
 		if (myList			!= aRhs.myList			)	return false;
-		if (myKeyIndex		!= aRhs.myKeyIndex		)	return false;
-		if (myKeyGeneration != aRhs.myKeyGeneration	)	return false;
+		if (myKeyIndex			!= aRhs.myKeyIndex		)	return false;
+		if (myKeyGeneration 		!= aRhs.myKeyGeneration		)	return false;
 
 		return true;
-		//if (auto ptr = aRhs.Get()	)
-		//{
-		//	//Check if same
-		//	return ptr == Get();
-		//}
-
-		////If aRhs fails
-		//return false;
 	}
 
 	void operator =(const GamePointer<T>& aRhs)
@@ -157,27 +149,11 @@ public:
 	bool operator <(const GamePointer<T>& aRhs) const
 	{
 		if (myKeyIndex		< aRhs.myKeyIndex		) return true;
-		if (myKeyGeneration < aRhs.myKeyGeneration	) return true;
-		if (myList			!= aRhs.myList			) return true;
+		if (myKeyGeneration 	< aRhs.myKeyGeneration		) return true;
+		if (myList		!= aRhs.myList			) return true;
 
 		return false;
 	}
-
-	/*void operator =(const int& aObjectID)
-	{
-		this* =
-		myID = aObjectID;
-	}
-
-	void operator =(const T& aObject)
-	{
-		myID = aObject->GetID();
-	}
-
-	void operator =(const T* aObject)
-	{
-		myID = aObject ? aObject->GetID() : 0;
-	}*/
 
 
 };
