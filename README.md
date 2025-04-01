@@ -14,6 +14,8 @@ This tool helps with buttons and Scripting tool.
 
 ## Memory Management
 
+How Titan Engine manages Assets (Such as Models, Textures, shaders) and Game Entitis (Such as GameObject and Components)
+
 ## Component System
 
 ## Transform
