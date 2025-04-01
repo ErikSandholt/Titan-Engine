@@ -112,12 +112,10 @@ private:
 		if constexpr (std::is_same_v<TKey, std::string>)
 		{
 			find = myAssetData.find(aAssetPointer.GetAssetName().data());
-			//return CreateAssetPointer(find->first, find->second);
 		}
 		else
 		{
 			find = myAssetData.find(aAssetPointer.GetID());
-			//return CreateAssetPointer(aAssetPointer.GetAssetName().data(), find->second);
 		}
 
 		++find->second.Count;
@@ -332,7 +330,6 @@ private:
 		}
 
 		++findData->second.Count;
-		//return CreateAssetPointer(aAssetPointer.GetAssetName().data(), findData->second);
 	}
 
 	void Destroy(const AssetPointer<TValue>& aAssetPointer) override
