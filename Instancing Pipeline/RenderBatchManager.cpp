@@ -106,25 +106,6 @@ int EraseFromList(std::vector<T>& outList, typename std::vector<T>::iterator aBe
 }
 #pragma endregion
 
-
-//bool RenderBatchManager::Init()
-//{
-//    return true;
-//}
-//
-//bool RenderBatchManager::Clear()
-//{
-//    return true;
-//}
-//
-//void RenderBatchManager::BeginOfFrame()
-//{
-//}
-//
-//void RenderBatchManager::EndOfFrame()
-//{
-//}
-
 void RenderBatchManager::Update_RendererModel()
 {
 	std::vector<Animator*> animators = {};
@@ -200,93 +181,9 @@ void RenderBatchManager::Update_RendererModel()
 
 	auto& buffer = gpuManager->GetBuffer(DXBuffers::AnimationBones);
 
-	//gpuManager->SetBuffer(DXBuffers::AnimationBones, myBonesList.data(), sizeof(CU::Matrix4x4f[MAX_BONES_ALLOWED]) * size, "Bind Animations");
 	//Separate Update
 	DX11::UpdateBuffer(buffer.buffer.Get(), myBonesList.data(), sizeof(AnimationMatrix) * myBonesList.size());
 	DX11::Context->VSSetShaderResources((int)TextureSlot::AnimatonBones, 1, &myInstanceSRV);
-
-
-
-
-
-
-
-
-	//TODO
-	// 
-	//Create CBuffer for animator offset Index 
-	//Update buffer Index and Bones on GPU
-	//Fix Shader
-
-	//Create Function to SetOffset
-
-	//int amount = std::min((int)myBonesList.size(), MAX_ANIMATED_INSTANCES);
-	//UpdateAnimations(amount);
-
-	//GraphicsEngine::ourGPUBufferManager->SetBuffer(DXBuffers::Animation, myBonesList.data(), sizeof(CU::Matrix4x4f[MAX_BONES_ALLOWED]) * myBoneBindIndex, "Bind Animations");
-}
-
-void RenderBatchManager::UpdateTransforms_RendererModel()
-{
-	//Right now Update all
-	for (size_t i = 0; i < myComponents_RendererModel.size(); ++i)
-	{
-		myInstanceData_RendererModel[i].transform = myComponents_RendererModel[i].transform->GetWorldMatrix();
-	}
-}
-
-void RenderBatchManager::UpdateAnimations(int aComponentOffset, int aStartIndex, int someAmount)
-{
-	aComponentOffset;
-	aStartIndex;
-	someAmount;
-	//Animator** animatorList = new Animator* [someAmount];
-
-	////Get Animators
-	//for (size_t i = 0; i < someAmount; ++i)
-	//{
-	//	animatorList[i] = myComponents_RendererModel.at(aComponentOffset + i).animator.Get();
-	//}
-
-	////Update buffer with each animator
-	//for (size_t i = 0; i < someAmount; ++i)
-	//{
-	//	animatorList[i]->UpdateAnimator(0, TGA::FBX::Matrix(), (TGA::FBX::Matrix*)myAnimatorJointsList[aStartIndex + i]);
-	//}
-
-	////Update buffer on GPU side
-	//GraphicsEngine::ourGPUBufferManager->SetBuffer(DXBuffers::Animation, myAnimatorJointsList, sizeof(myAnimatorJointsList), "Pelle");
-
-	//delete animatorList;
-}
-
-int RenderBatchManager::UpdateAnimations(int aAmount)
-{
-	//Return remaining
-	
-	int remainingOnBuffer = myBoneBindIndex - myBoneListIndex;
-
-	if (0 < remainingOnBuffer)
-	{
-		myBoneListIndex += remainingOnBuffer;
-		return remainingOnBuffer;
-	}
-
-	int bindAmount = std::min(aAmount, MAX_ANIMATED_INSTANCES);
-
-	myBoneBindIndex += bindAmount;
-
-	assert(myBoneBindIndex <= myBonesList.size());
-
-	//GraphicsEngine::ourGPUBufferManager->SetBuffer(DXBuffers::Animation, myBonesList.data() + myBoneListIndex, sizeof(CU::Matrix4x4f[MAX_BONES_ALLOWED]) * bindAmount, "Bind Animations");
-	
-	return bindAmount;
-}
-
-void RenderBatchManager::ResetAnimationListIndex()
-{
-	myBoneListIndex = 0;
-	myBoneBindIndex = 0;
 }
 
 unsigned int RenderBatchManager::Add(const GamePointer<RendererModel>& aRenderModel)
@@ -371,59 +268,6 @@ void RenderBatchManager::Erase(unsigned int aBatchID, const GamePointer<Renderer
 	}
 
 	if (sharedData == nullptr) throw;
-
-	//ComponentContainer container = { aRenderModel, aRenderModel->GetComponent<Animator>(), aRenderModel->GetTransform() };
-
-	////Erase to sharedData
-	//{
-	//	SharedData_RendererModel data;
-	//	data.isForward = component->IsRenderedForward();
-	//	data.isAnimated = container.animator;
-
-	//	ModelInstance& modelInstance = component->GetModel();
-	//	Model& model = modelInstance.myModel;
-
-	//	data.mesh = model.mesh;
-	//	data.coolVS = model.shader.vs;
-	//	data.coolps = model.shader.ps;
-
-	//	std::copy_n(&modelInstance.myTextures[0][0],
-	//		MAX_DIFFERENT_TEXTURES * MAX_MESHES_PER_MODEL,
-	//		&data.textures[0][0]);
-
-
-	//	auto find = std::lower_bound(mySharedData_RendererModel.begin(), mySharedData_RendererModel.end(), data);
-
-	//	bool meshCheck	= data.mesh.GetID() == find->mesh.GetID();		meshCheck	;
-	//	bool VsCheck	= data.coolVS.GetID() == find->coolVS.GetID();	VsCheck		 ;
-	//	bool PsCheck	= data.coolps.GetID() == find->coolps.GetID();	PsCheck		 ;
-	//																				 
-	//	bool textureCheck = true;										textureCheck ;
-	//	for (int i = 0; i < 4; ++i)
-	//	{
-	//		for (int x = 0; x < 4; ++x)
-	//		{
-	//			if (data.textures[i][x].GetID() != find->textures[i][x].GetID())
-	//			{
-	//				textureCheck = false;
-	//				break;
-	//			}
-	//		}
-	//		if (!textureCheck) break;
-	//	}
-	//	if (find == mySharedData_RendererModel.end() || *find < data || data < *find)
-	//	{
-	//		throw;
-	//	}
-	//	sharedDataIndex = static_cast<int>(std::distance(mySharedData_RendererModel.begin(), find));
-
-	//	sharedDataAmount = --find->amount;
-	//	if (find->amount == 0)
-	//	{
-	//		mySharedData_RendererModel.erase(find);
-	//		//--sharedDataIndex;
-	//	}
-	//}
 
 	//Erase from componentList
 	int startIndex = 0;
