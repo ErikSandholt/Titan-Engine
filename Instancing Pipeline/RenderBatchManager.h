@@ -1,5 +1,4 @@
 #pragma once
-//#include "Engine\Utils_Misc\IManager.h"
 #include <vector>
 #include <CommonUtilities/Matrix4x4.hpp>
 #include "Engine/ComponentSystem/GamePointer.hpp"
@@ -17,11 +16,11 @@ struct ID3D11PixelShader;
 struct SharedData_RendererModel
 {
 	//Model model;
-	AssetPointer<Mesh*>							mesh;
-	AssetPointer<ID3D11PixelShader*>			coolps; // todo- please rename these and fix the linker errors that occur when they're not called this
+	AssetPointer<Mesh*>				mesh;
+	AssetPointer<ID3D11PixelShader*>		coolps; // todo- please rename these and fix the linker errors that occur when they're not called this
 	AssetPointer<VertexShaderAndInputLayout>	coolVS; // todo- maybe replace with model struct from model.h?
 
-	AssetPointer<ShaderResource>				textures[MAX_MESHES_PER_MODEL][MAX_DIFFERENT_TEXTURES] = {};
+	AssetPointer<ShaderResource>			textures[MAX_MESHES_PER_MODEL][MAX_DIFFERENT_TEXTURES] = {};
 	
 	bool isForward	= false;
 	bool isAnimated = false;
@@ -34,8 +33,8 @@ struct SharedData_RendererModel
 	{
 		if (isForward		!=		aRhs.isForward)			return isForward	< aRhs.isForward;	//False First
 		if (mesh.GetID()	!=		aRhs.mesh.GetID())		return mesh.GetID()	< aRhs.mesh.GetID();
-		if (coolps.GetID()		!=		aRhs.coolps.GetID())		return coolps.GetID()	< aRhs.coolps.GetID();
-		if (coolVS.GetID()		!=		aRhs.coolVS.GetID())		return coolVS.GetID()	< aRhs.coolVS.GetID();
+		if (coolps.GetID()	!=		aRhs.coolps.GetID())		return coolps.GetID()	< aRhs.coolps.GetID();
+		if (coolVS.GetID()	!=		aRhs.coolVS.GetID())		return coolVS.GetID()	< aRhs.coolVS.GetID();
 
 		for (size_t m = 0; m < MAX_MESHES_PER_MODEL; ++m)
 		{
@@ -85,17 +84,16 @@ private:
 	static RenderBatchManager* Instance;
 
 	std::vector<SharedData_RendererModel>			mySharedData_RendererModel	= {};
-	std::vector<ComponentContainer>					myComponents_RendererModel	= {};
-	std::vector<InstanceData>						myInstanceData_RendererModel= {};
-	//CU::Matrix4x4f									myAnimatorJointsList[MAX_ANIMATED_INSTANCES][MAX_BONES_ALLOWED] = {};
+	std::vector<ComponentContainer>				myComponents_RendererModel	= {};
+	std::vector<InstanceData>				myInstanceData_RendererModel	= {};
 
-	std::vector<AnimationMatrix>					myBonesList					= {};
-	ID3D11ShaderResourceView*						myInstanceSRV				= nullptr;
+	std::vector<AnimationMatrix>				myBonesList			= {};
+	ID3D11ShaderResourceView*				myInstanceSRV			= nullptr;
 
 	int myBoneListIndex			= 0;
 	int myBoneBindIndex			= 0;
 
-	unsigned int myBatchIDCount				= 0;
+	unsigned int myBatchIDCount		= 0;
 
 public:
 
@@ -106,19 +104,17 @@ public:
 	static RenderBatchManager& GetInstance() { return *Instance; }
 
 	//If we need culling its best if done inside here
-	const	SharedData_RendererModel*			SharedData_RendererModelData()			const { return mySharedData_RendererModel.data(); }
-			size_t								SharedData_RendererModelSize()			const { return mySharedData_RendererModel.size(); }
+	const	SharedData_RendererModel*		GetSharedData_RendererModelData()			const { return mySharedData_RendererModel.data(); }
+			size_t				GetSharedData_RendererModelSize()			const { return mySharedData_RendererModel.size(); }
 
-	const	RenderBatchManager::InstanceData*	Transform_RendererModelData()			const { return myInstanceData_RendererModel.data(); }
-			size_t								Transform_RendererModelSize()			const { return myInstanceData_RendererModel.size(); }
+	const	RenderBatchManager::InstanceData*	GetTransform_RendererModelData()			const { return myInstanceData_RendererModel.data(); }
+			size_t				GetTransform_RendererModelSize()			const { return myInstanceData_RendererModel.size(); }
 
-	const	ComponentContainer*					SharedData_RenderModelComponentData()	const { return myComponents_RendererModel.data(); }
-	size_t										SharedData_RenderModelComponentSize()	const { return myComponents_RendererModel.size(); }
+	const	ComponentContainer*			GetSharedData_RenderModelComponentData()	const { return myComponents_RendererModel.data(); }
+	size_t						GetSharedData_RenderModelComponentSize()	const { return myComponents_RendererModel.size(); }
 
 	//Only once per frame
 	void Update_RendererModel();
-	void UpdateTransforms_RendererModel();
-	void UpdateAnimations(int aComponentOffset, int aStartIndex, int someAmount);
 
 	/// <summary>
 	/// Keeps track how many instances are on the GPU buffer
@@ -131,11 +127,4 @@ public:
 	unsigned int Add(const GamePointer<RendererModel>& aRenderModel);
 	void Erase(unsigned int aBatchID, const GamePointer<RendererModel>& aRenderModel);
 
-	//// Inherited via IManager
-	//bool Init() override;
-	//bool Clear() override;
-	//void BeginOfFrame() override;
-	//void EndOfFrame() override;
-
-private:
 };
