@@ -28,6 +28,8 @@ When data is removed from an array of T the last entity in the array is moved to
 
 Adding data when the Slot_Map is full it will expand by 2 * size and move the memory.
 
+This makes sure the Keys are still valid and memory can be ordered by active entities.
+
 ## Slot_Manager<T>
 
 As the Slot_Map will move data immediately when modified the manager will contain buffers for when the Slot_Map is full and removing entities. At the end of the frame the manager will replace destroyed entities with the new ones if any, grow the map if needed and add them.
